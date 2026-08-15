@@ -1,0 +1,18 @@
+/* Keep chart layout dimensions independent from their high-DPI pixel buffers. */
+html, body {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+#priceChart {
+  height: 210px;
+}
+
+#assetChart {
+  height: 150px;
+}
+
+#priceChart,
+#assetChart {
+  max-height: none;
+}
