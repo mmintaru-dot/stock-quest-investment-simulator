@@ -1,73 +1,8 @@
-<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="仮想資金で投資の基本を楽しく学べる株式投資シミュレーター">
-  <title>Stock Quest｜株式投資シミュレーター</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="canvas-fix.css">
-</head>
-<body>
-  <header class="topbar">
-    <div class="brand"><span class="brand-mark">SQ</span><div><strong>Stock Quest</strong><small>投資を、冒険に。</small></div></div>
-    <div class="day-info"><span id="dateLabel"></span><span class="streak" id="difficultyLabel"></span></div>
-    <button class="ghost" id="resetBtn">最初から</button>
-  </header>
-
-  <main>
-    <section class="hero-stats" aria-label="資産状況">
-      <article class="stat primary"><span>総資産</span><strong id="totalAssets">¥1,000,000</strong><small id="totalReturn">総リターン 0.00%</small></article>
-      <article class="stat"><span>現金</span><strong id="cash">¥1,000,000</strong><small>すぐに使える資金</small></article>
-      <article class="stat"><span>保有株評価額</span><strong id="stockValue">¥0</strong><small id="positionCount">0銘柄を保有</small></article>
-      <article class="stat"><span>含み損益</span><strong id="unrealized">¥0</strong><small id="realized">実現損益 ¥0</small></article>
-      <article class="goal-card"><div><span>1億円への道</span><strong id="goalPercent">1.0%</strong></div><div class="progress"><i id="goalBar"></i></div><small id="rankText">ランク：ルーキー投資家</small></article>
-    </section>
-
-    <section class="event-banner" id="eventBanner"><span class="event-icon">⚡</span><div><strong id="eventTitle">市場は穏やかです</strong><p id="eventText">「1日進める」でニュースと株価が動きます。</p></div><button class="next-day" id="nextDayBtn">1日進める <span>→</span></button></section>
-
-    <section class="workspace">
-      <aside class="panel market-panel">
-        <div class="panel-title"><div><span class="eyebrow">MARKET</span><h2>銘柄一覧</h2></div><div class="tabs"><button class="tab active" data-market="all">すべて</button><button class="tab" data-market="JP">日本</button><button class="tab" data-market="US">米国</button></div></div>
-        <div class="stock-list" id="stockList"></div>
-      </aside>
-
-      <section class="panel detail-panel">
-        <div class="stock-heading"><div><span class="ticker" id="selectedTicker"></span><h1 id="selectedName"></h1><span class="sector" id="selectedSector"></span></div><div class="quote"><strong id="selectedPrice"></strong><span id="selectedChange"></span></div></div>
-        <canvas id="priceChart" height="210" aria-label="株価チャート"></canvas>
-        <div class="fundamentals" id="fundamentals"></div>
-        <div class="company-note" id="companyNote"></div>
-      </section>
-
-      <aside class="panel trade-panel">
-        <div class="trade-tabs"><button class="trade-tab active" data-side="buy">購入</button><button class="trade-tab" data-side="sell">売却</button></div>
-        <div class="trade-body">
-          <label>注文する銘柄<select id="tradeStock"></select></label>
-          <label>株数<div class="stepper"><button id="minusQty">−</button><input id="quantity" type="number" min="1" value="1" inputmode="numeric"><button id="plusQty">＋</button></div></label>
-          <div class="quick"><button data-qty="1">1株</button><button data-qty="10">10株</button><button data-qty="50">50株</button><button id="maxQty">最大</button></div>
-          <div class="order-summary"><div><span>現在価格</span><strong id="orderPrice"></strong></div><div><span>注文金額</span><strong id="orderTotal"></strong></div><div><span id="availableLabel">購入可能額</span><strong id="availableValue"></strong></div></div>
-          <button class="order-btn" id="orderBtn">この内容で購入</button>
-          <p class="order-message" id="orderMessage" role="status"></p>
-        </div>
-      </aside>
-    </section>
-
-    <section class="lower-grid">
-      <section class="panel wide"><div class="panel-title"><div><span class="eyebrow">PORTFOLIO</span><h2>保有銘柄</h2></div></div><div class="table-wrap"><table><thead><tr><th>銘柄</th><th>株数</th><th>平均取得単価</th><th>現在値</th><th>評価額</th><th>含み損益</th></tr></thead><tbody id="portfolioBody"></tbody></table></div></section>
-      <section class="panel performance"><div class="panel-title"><div><span class="eyebrow">PERFORMANCE</span><h2>投資成績</h2></div></div><canvas id="assetChart" height="150"></canvas><div class="metrics"><div><span>最大ドローダウン</span><strong id="drawdown">0.00%</strong></div><div><span>年率リターン風</span><strong id="annualized">0.00%</strong></div><div><span>リスク評価</span><strong id="riskRating">低</strong></div></div></section>
-    </section>
-
-    <section class="bottom-grid">
-      <section class="panel"><div class="panel-title"><div><span class="eyebrow">HISTORY</span><h2>売買履歴</h2></div></div><div class="history" id="historyList"></div></section>
-      <section class="panel"><div class="panel-title"><div><span class="eyebrow">LEARN</span><h2>投資ミニクイズ</h2></div><span class="points" id="points">0 pt</span></div><div id="quizBox"></div></section>
-      <section class="panel"><div class="panel-title"><div><span class="eyebrow">LIBRARY</span><h2>用語を学ぶ</h2></div></div><p class="muted">気になる用語をタップしてみよう</p><div class="term-cloud" id="termCloud"></div></section>
-    </section>
-  </main>
-
-  <div class="modal" id="welcomeModal" aria-hidden="true"><div class="modal-card"><button class="modal-close" data-close>×</button><span class="modal-icon">📈</span><h2>100万円から始める<br>投資の冒険</h2><p>仮想の銘柄を売買しながら、ニュースと株価の関係を学びましょう。</p><label>難易度<select id="difficulty"><option value="beginner">初心者（値動き小さめ）</option><option value="normal">標準</option><option value="hard">チャレンジ（値動き大きめ）</option></select></label><button class="order-btn" id="startBtn">冒険を始める</button></div></div>
-  <div class="modal" id="termModal" aria-hidden="true"><div class="modal-card term-card"><button class="modal-close" data-close>×</button><span class="eyebrow">INVESTMENT WORD</span><h2 id="termTitle"></h2><p id="termDescription"></p><button class="order-btn" data-close>わかった！</button></div></div>
-  <div class="toast" id="toast"></div>
-  <script src="game.js"></script>
-  <script src="canvas-fix.js"></script>
-</body>
-</html>
+<!doctype html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="複数の財務指標と決算を組み合わせて学ぶ本格株式投資シミュレーター"><title>MARKET MIND｜本格株式投資シミュレーター</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="app"><header class="topbar"><div class="brand"><b>MM</b><span>MARKET <em>MIND</em><small>INVESTMENT TERMINAL</small></span></div><nav><button class="nav active" data-view="market">市場</button><button class="nav" data-view="portfolio">ポートフォリオ</button><button class="nav" data-view="history">取引履歴</button></nav><div class="market-clock"><span id="period">2026 Q1</span><small id="cycle">景気回復</small></div><button id="settingsBtn" class="icon">⚙</button></header>
+<section class="tickerbar"><span>政策金利 <b id="rate">0.50%</b></span><span>市場心理 <b id="sentiment">中立</b></span><span>運用残期間 <b id="remaining">10年</b></span><div id="tickerNews">市場が開きました。企業を分析して投資を始めましょう。</div></section>
+<main><section class="summary"><article><span>総資産</span><strong id="totalAssets">¥10,000,000</strong><small id="totalReturn">+0.00%</small></article><article><span>現金</span><strong id="cash">¥10,000,000</strong><small id="cashRatio">現金比率 100%</small></article><article><span>株式評価額</span><strong id="stockValue">¥0</strong><small id="positions">0銘柄</small></article><article><span>評価損益</span><strong id="unrealized">¥0</strong><small id="dividends">累計配当 ¥0</small></article><button id="advanceBtn" class="advance"><span>NEXT EARNINGS</span><b>次の四半期へ進む →</b></button></section>
+<section id="marketView" class="view active"><aside class="watch panel"><div class="panel-head"><div><small>EQUITY SCREENER</small><h2>企業を探す</h2></div><input id="search" placeholder="企業名・業種"></div><div class="filters" id="filters"></div><div class="stock-list" id="stockList"></div></aside><section class="terminal panel"><div class="company-head"><div><small id="ticker"></small><h1 id="companyName"></h1><span id="sector"></span></div><div class="quote"><strong id="price"></strong><b id="change"></b><small id="marketCap"></small></div><button id="tradeOpen" class="buy">売買</button></div><div class="analysis-tabs" id="analysisTabs"><button class="active" data-tab="overview">概要</button><button data-tab="performance">業績</button><button data-tab="finance">財務</button><button data-tab="cashflow">CF</button><button data-tab="earnings">決算</button><button data-tab="news">ニュース</button></div><div class="analysis-scroll"><div class="chart-controls"><div id="chartMetrics"></div><div id="chartRanges"></div></div><canvas id="mainChart" height="220"></canvas><div id="analysisContent"></div></div></section></section>
+<section id="portfolioView" class="view"><div class="portfolio-layout"><section class="panel portfolio-main"><div class="panel-head"><div><small>PORTFOLIO</small><h2>保有資産</h2></div><div id="portfolioMetrics"></div></div><div class="table-wrap"><table><thead><tr><th>企業</th><th>株数</th><th>平均取得</th><th>現在値</th><th>投資額</th><th>評価額</th><th>損益</th><th>配当</th></tr></thead><tbody id="portfolioBody"></tbody></table></div></section><section class="panel asset-panel"><div class="panel-head"><h2>資産推移</h2></div><canvas id="assetChart" height="220"></canvas><div id="riskStats" class="risk-stats"></div></section></div></section>
+<section id="historyView" class="view"><section class="panel history-panel"><div class="panel-head"><div><small>JOURNAL</small><h2>投資判断の記録</h2></div></div><div id="historyList" class="history-list"></div></section></section></main></div>
+<div id="modal" class="modal"><div class="modal-card"><button class="close" data-close>×</button><div id="modalBody"></div></div></div><div id="welcome" class="modal"><div class="modal-card welcome"><span class="logo-big">MM</span><small>10-YEAR INVESTMENT SIMULATION</small><h2>数字の裏側を読む投資へ。</h2><p>PERだけでは企業の価値は決まりません。成長率、利益率、財務、期待との差を読み、1,000万円を10年間運用してください。</p><label>難易度<select id="difficulty"><option value="beginner">初心者 — 解説を常時表示</option><option value="normal">中級 — 要点のみ表示</option><option value="advanced">上級 — 期待と財務の影響大</option></select></label><button id="startBtn" class="primary">運用を開始する</button></div></div><div id="toast" class="toast"></div><script src="game.js"></script></body></html>
