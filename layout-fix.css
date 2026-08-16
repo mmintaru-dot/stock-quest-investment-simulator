@@ -1,0 +1,31 @@
+/* Fixed dashboard layout. Keep every height derived from one viewport root. */
+html,body{width:100%;height:100%;overflow:hidden}
+#app{width:100%;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.topbar{flex:0 0 64px}
+.tickerbar{flex:0 0 36px}
+main{height:auto;flex:1 1 auto;min-height:0;overflow:hidden}
+.summary{flex:0 0 78px;min-height:0}
+.view{min-width:0;min-height:0;overflow:hidden}
+.view#marketView.active{height:100%;min-height:0}
+.watch,.terminal,.portfolio-layout,.portfolio-main,.asset-panel,.history-panel{min-width:0;min-height:0}
+.stock-list,.analysis-scroll,.table-wrap,.history-list{min-height:0;overscroll-behavior:contain}
+.portfolio-layout{height:100%;overflow:hidden}
+.portfolio-main,.asset-panel,.history-panel{height:100%;overflow:hidden}
+.asset-panel{display:flex;flex-direction:column}
+.asset-panel .panel-head{flex:0 0 auto}
+.asset-panel canvas{flex:0 0 220px}
+canvas{display:block;height:220px!important;max-height:40vh;min-height:0;aspect-ratio:auto;contain:size layout paint}
+.analysis-scroll canvas{height:220px!important}
+@media(max-width:850px){
+ html,body{overflow:hidden}
+ #app{height:100dvh;overflow:hidden}
+ main{height:auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+ .summary{flex:0 0 auto}
+ .view{flex:0 0 auto;overflow:visible}
+ .view#marketView.active{height:auto;overflow:visible}
+ .watch{height:370px;min-height:370px}
+ .terminal{height:740px;min-height:740px}
+ .portfolio-layout{height:auto;overflow:visible}
+ .portfolio-main,.asset-panel,.history-panel{height:auto;min-height:400px}
+ canvas{height:220px!important;max-height:220px}
+}
